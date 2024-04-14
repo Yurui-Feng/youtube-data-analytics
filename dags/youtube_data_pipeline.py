@@ -78,4 +78,4 @@ save_to_rds_task = GlueJobOperator(
     dag=dag,
 )
 
-ingest_task >> upload_task >> preprocess_task >> save_to_rds_task
+ingest_task >> upload_task >> crawler_task >> preprocess_task >> save_to_rds_task

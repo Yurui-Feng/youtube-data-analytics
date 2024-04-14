@@ -14,8 +14,6 @@ args = parser.parse_args()
 # if not os.getenv('AWS_ACCESS_KEY_ID') or not os.getenv('AWS_SECRET_ACCESS_KEY'):
 #     raise ValueError("AWS credentials are not set in environment variables.")
 
-
-
 try:
     s3 = boto3.client('s3',
                       aws_access_key_id=Variable.get('AWS_ACCESS_KEY_ID'),
@@ -24,7 +22,8 @@ try:
     # Default parameters with dynamic S3 key based on channel name
     bucket_name = 'video-analytics-goalcast'
     file_name = 'video_data.json'
-    s3_file_key = f'{args.channel_name}/raw/{file_name}'
+    s3_file_key = file_name
+    # s3_file_key = f'{args.channel_name}/raw/{file_name}'
 
     # Attempt to open and read the file
     with open(file_name, 'r') as file:

@@ -22,7 +22,7 @@ try:
     # Default parameters with dynamic S3 key based on channel name
     bucket_name = 'video-analytics-goalcast'
     file_name = 'video_data.json'
-    s3_file_key = file_name
+    s3_file_key = f'raw/{file_name}'
     # s3_file_key = f'{args.channel_name}/raw/{file_name}'
 
     # Attempt to open and read the file

@@ -51,14 +51,14 @@ upload_task = PythonOperator(
     dag=dag,
 )
 
-crawler_task = GlueCrawlerOperator(
-    task_id='run_glue_crawler',
-    config = {
-        'Name': 'video-data-crawler',
-    },
-    aws_conn_id='aws_default',
-    dag=dag,
-)
+# crawler_task = GlueCrawlerOperator(
+#     task_id='run_glue_crawler',
+#     config = {
+#         'Name': 'video-data-crawler',
+#     },
+#     aws_conn_id='aws_default',
+#     dag=dag,
+# )
 
 preprocess_task = GlueJobOperator(
     task_id='preprocess_data',
@@ -78,4 +78,4 @@ save_to_rds_task = GlueJobOperator(
     dag=dag,
 )
 
-ingest_task >> upload_task >> crawler_task >> preprocess_task >> save_to_rds_task
+ingest_task >> upload_task >> preprocess_task >> save_to_rds_task

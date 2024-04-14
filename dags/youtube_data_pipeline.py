@@ -1,5 +1,7 @@
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+from airflow.providers.amazon.aws.operators.glue import AwsGlueJobOperator
+from airflow.providers.amazon.aws.operators.glue_crawler import AwsGlueCrawlerOperator
 from datetime import datetime, timedelta
 import os
 
@@ -49,4 +51,31 @@ upload_task = PythonOperator(
     dag=dag,
 )
 
-ingest_task >> upload_task
+crawler_task = AwsGlueCrawlerOperator(
+    task_id='run_glue_crawler',
+    config = {
+        'Name': 'video_data_crawler',
+    },
+    aws_conn_id='aws_default',
+    dag=dag,
+)
+
+preprocess_task = AwsGlueJobOperator(
+    task_id='preprocess_data',
+    job_name='video-stats-analyze',
+    script_location='s3://glue-script-video-analytics/preprocess_glue.py',
+    aws_conn_id='aws_default',
+    region_name='us-west-2',
+    dag=dag,
+)
+
+save_to_rds_task = AwsGlueJobOperator(
+    task_id='save_to_rds',
+    job_name='processed_s3_to_rds',
+    script_location='s3://glue-script-video-analytics/save_to_rds_glue.py',
+    aws_conn_id='aws_default',
+    region_name='us-west-2',
+    dag=dag,
+)
+
+ingest_task >> upload_task >> preprocess_task >> save_to_rds_task

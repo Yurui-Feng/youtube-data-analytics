@@ -54,7 +54,7 @@ upload_task = PythonOperator(
 crawler_task = GlueCrawlerOperator(
     task_id='run_glue_crawler',
     config = {
-        'Name': 'video_data_crawler',
+        'Name': 'video-data-crawler',
     },
     aws_conn_id='aws_default',
     dag=dag,

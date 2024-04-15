@@ -40,7 +40,7 @@ dag = DAG(
 ingest_task = PythonOperator(
     task_id='ingest_data',
     python_callable=ingest_data,
-    op_kwargs={'channel_id': 'UCvysUcwPV3LppVzfxkIGXhg'},  #UCwdogH5kbb9wGy2Amvw6KeQ
+    op_kwargs={'channel_id': 'UCwdogH5kbb9wGy2Amvw6KeQ'},  #UCwdogH5kbb9wGy2Amvw6KeQ
     dag=dag,
 )
 
@@ -67,15 +67,26 @@ preprocess_task = GlueJobOperator(
     aws_conn_id='aws_default',
     region_name='us-west-2',
     dag=dag,
+    num_of_dpus=10,
+    iam_role_name='AWSGlueServiceRole',
+    execution_timeout=timedelta(minutes=10),
+    retries=2,
+    retry_delay=timedelta(minutes=5)
 )
+
 
 save_to_rds_task = GlueJobOperator(
     task_id='save_to_rds',
-    job_name='processed_s3_to_rds',
+    job_name='processed_s3_to_RDS',
     script_location='s3://glue-script-video-analytics/save_to_rds_glue.py',
     aws_conn_id='aws_default',
     region_name='us-west-2',
     dag=dag,
+    num_of_dpus=10,
+    iam_role_name='AWSGlueServiceRole',
+    execution_timeout=timedelta(minutes=10), 
+    retries=2,
+    retry_delay=timedelta(minutes=5)
 )
 
 ingest_task >> upload_task >> preprocess_task >> save_to_rds_task

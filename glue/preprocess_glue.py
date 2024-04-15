@@ -9,8 +9,7 @@ from awsglue.job import Job
 from awsglue.dynamicframe import DynamicFrame
 
 # Setup logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
 
 args = getResolvedOptions(sys.argv, ['JOB_NAME'])
 sc = SparkContext()
